@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "name": "GitHub",
+  "description": "Followers, repositories and join date from a public profile.",
+  "domain": "github.com",
+  "modes": [
+    "manual",
+    "auto",
+    "scheduled"
+  ],
+  "source": {
+    "type": "api",
+    "url": "https://api.github.com/users/{username}"
+  },
+  "fields": [
+    {
+      "key": "followers",
+      "label": "Followers",
+      "path": "followers",
+      "transform": "number"
+    },
+    {
+      "key": "repos",
+      "label": "Repositories",
+      "path": "public_repos",
+      "transform": "number"
+    },
+    {
+      "key": "joined",
+      "label": "Join date",
+      "path": "created_at",
+      "regex": "^(\\d{4}-\\d{2}-\\d{2})"
+    },
+    {
+      "key": "profile",
+      "label": "Profile link",
+      "path": "html_url"
+    }
+  ]
+}

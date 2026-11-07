@@ -1,0 +1,57 @@
+{
+  "version": 2,
+  "name": "Reddit",
+  "description": "Karma, contributions and cake day from your open profile page.",
+  "domain": "reddit.com",
+  "pages": [
+    "^/user/"
+  ],
+  "modes": [
+    "manual",
+    "auto"
+  ],
+  "source": {
+    "type": "page",
+    "namedInAddress": true
+  },
+  "fields": [
+    {
+      "key": "karma",
+      "label": "Karma",
+      "selector": "[data-testid=karma-number]",
+      "transform": "number"
+    },
+    {
+      "key": "link_karma",
+      "label": "Post karma",
+      "selector": "faceplate-tooltip:has([data-testid=karma-number])",
+      "regex": "([\\d,]+) post karma",
+      "transform": "number"
+    },
+    {
+      "key": "comment_karma",
+      "label": "Comment karma",
+      "selector": "faceplate-tooltip:has([data-testid=karma-number])",
+      "regex": "([\\d,]+) comment karma",
+      "transform": "number"
+    },
+    {
+      "key": "contributions",
+      "label": "Contributions",
+      "selector": "[data-testid=contribution-count]",
+      "transform": "number"
+    },
+    {
+      "key": "cake_day",
+      "label": "Cake day",
+      "selector": "time[data-testid=cake-day]",
+      "attr": "datetime",
+      "regex": "^(\\d{4}-\\d{2}-\\d{2})"
+    },
+    {
+      "key": "profile",
+      "label": "Profile link",
+      "template": "https://www.reddit.com/user/{username}"
+    }
+  ]
+}

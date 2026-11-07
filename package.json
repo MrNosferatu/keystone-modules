@@ -1,0 +1,14 @@
+{
+  "name": "keystone-modules",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The bank of site modules for the Keystone browser extension.",
+  "type": "module",
+  "scripts": {
+    "keygen": "node scripts/keygen.mjs",
+    "check": "node scripts/build.mjs --check",
+    "build": "node --env-file-if-exists=.env scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}

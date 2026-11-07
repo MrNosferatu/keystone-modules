@@ -1,0 +1,38 @@
+name: Publish modules
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+env:
+  PUBLISHED_URL: https://raw.githubusercontent.com/${{ github.repository }}/published/index.json
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm test
+      - run: npm run check
+      - name: Sign
+        if: github.event_name == 'push'
+        run: node scripts/build.mjs
+        env:
+          MODULE_SIGNING_KEY: ${{ secrets.MODULE_SIGNING_KEY }}
+      - name: Publish to the published branch
+        if: github.event_name == 'push'
+        run: |
+          cd dist
+          git init -b published
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.json
+          git commit -m "Publish ${GITHUB_SHA::7}"
+          git push --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" published
