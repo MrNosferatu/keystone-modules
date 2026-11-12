@@ -17,6 +17,22 @@ test('a module stays on its own site, over https', () => {
   assert.ok(bad({ source: { type: 'api', url: 'https://reddit.com.evil.example/x' } }));
   assert.ok(bad({ source: { type: 'api' } }));
 });
+test('a key is only for an api source that checks its owner on its own site', () => {
+  const source = (over) => ({ source: { type: 'api', url: 'https://www.reddit.com/x', auth: 'key', identity: 'name', identityUrl: 'https://www.reddit.com/me', ...over } });
+  assert.equal(problems('r', { ...api, ...source({}) }).length, 0);
+  assert.ok(bad(source({ identityUrl: 'https://evil.example/me' })));
+  assert.ok(bad(source({ identityUrl: undefined })));
+  assert.ok(bad(source({ identity: undefined })));
+  assert.ok(bad(source({ session: true })));
+  assert.ok(bad(source({ auth: 'cookie' })));
+});
+test('a list field names what it keeps from each entry', () => {
+  const list = (field) => ({ fields: [{ key: 'k', path: 'a', ...field }] });
+  assert.equal(problems('r', { ...api, ...list({ items: { n: 'name' } }) }).length, 0);
+  assert.ok(bad(list({ items: {} })));
+  assert.ok(bad(list({ items: { n: 1 } })));
+  assert.ok(bad(list({ items: { n: 'name' }, transform: 'number' })));
+});
 test('anything unknown is refused', () => {
   assert.ok(bad({ script: 'alert(1)' }));
   assert.ok(bad({ fields: [{ key: 'k', path: 'a', code: 'x' }] }));

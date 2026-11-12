@@ -34,7 +34,7 @@ export function problems(slug, module) {
 
   const source = module.source;
   if (typeof source !== 'object' || source === null) return [...errors, 'source: required'];
-  onlyKeys(source, ['type', 'url', 'session', 'match', 'identity', 'namedInAddress'], 'source', errors);
+  onlyKeys(source, ['type', 'url', 'session', 'match', 'identity', 'auth', 'identityUrl', 'namedInAddress'], 'source', errors);
   if (!['page', 'api', 'intercept'].includes(source.type)) errors.push('source.type: page, api or intercept');
   if (source.type === 'api') {
     let url = null;
@@ -56,6 +56,16 @@ export function problems(slug, module) {
     errors.push('source.match is for intercept');
   }
   if (source.type !== 'api' && modes?.includes?.('scheduled')) errors.push('modes: only api can be scheduled, the others need the site open');
+  if (source.auth !== undefined || source.identityUrl !== undefined) {
+    let who = null;
+    try {
+      who = new URL(source.identityUrl);
+    } catch {
+      // Reported below.
+    }
+    const onSite = who?.protocol === 'https:' && (who.hostname === module.domain || who.hostname.endsWith(`.${module.domain}`));
+    if (source.type !== 'api' || source.auth !== 'key' || source.session || !source.identity || !onSite) errors.push("source.auth: \"key\" on an api source, with identity and an identityUrl on the module's own domain, and no session");
+  }
   if (source.type === 'page' && source.identity) errors.push('source.identity reads an answer, which page has not got');
 
   if (source.type !== 'page' && source.namedInAddress !== undefined) errors.push('source.namedInAddress is for page');
@@ -69,7 +79,7 @@ export function problems(slug, module) {
   const seen = new Set();
   for (const field of module.fields) {
     const where = `field ${field?.key ?? '?'}`;
-    onlyKeys(field, ['key', 'label', 'path', 'selector', 'attr', 'regex', 'template', 'transform'], where, errors);
+    onlyKeys(field, ['key', 'label', 'path', 'selector', 'attr', 'regex', 'template', 'transform', 'items'], where, errors);
     if (!KEY.test(field.key ?? '')) errors.push(`${where}: key uses lowercase letters, digits and _`);
     if (seen.has(field.key)) errors.push(`${where}: listed twice`);
     seen.add(field.key);
@@ -77,6 +87,10 @@ export function problems(slug, module) {
     if (source.type !== 'page' && field.selector) errors.push(`${where}: selector needs a page source`);
     if (source.type === 'page' && field.path) errors.push(`${where}: path needs an api or intercept source`);
     if (field.regex && !validPattern(field.regex)) errors.push(`${where}: regex is not a valid pattern`);
+    if (field.items !== undefined) {
+      const names = typeof field.items === 'object' && field.items !== null ? Object.entries(field.items) : [];
+      if (!field.path || field.regex || field.transform || !names.length || names.length > 8 || names.some(([k, v]) => !KEY.test(k) || typeof v !== 'string')) errors.push(`${where}: items needs a path, and up to 8 names that each have a path`);
+    }
     if (field.transform && !['number', 'unix_date', 'exists'].includes(field.transform)) errors.push(`${where}: transform is number, unix_date or exists`);
   }
   return errors;

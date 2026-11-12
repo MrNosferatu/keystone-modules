@@ -56,6 +56,15 @@ For an API that needs you signed in, add `"session": true` and `"identity"`, the
 path to the username in the answer. A value is only stored if it matches the
 service, so another signed-in account can't overwrite it.
 
+For an API that takes a key, add `"auth": "key"`, `"identity"`, and `"identityUrl"`, an
+address on the same site that names the key's owner. Each account saves its own key in
+the extension's Settings. The owner is checked first, and nothing else is read if it
+isn't the service's username. A key never reaches Keystone.
+
+A field with `"items"` sends a list, up to 25 entries: `path` points at the list, and
+`items` names up to 8 paths inside each entry. Keystone only stores it for a key set up
+as Object / List.
+
 **Captured Response:** reads a response the site's own page receives, when its
 path and query match `match`. Nothing extra is requested from the site. Needs the
 site open, so no schedule.
