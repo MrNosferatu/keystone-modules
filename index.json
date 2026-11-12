@@ -1,0 +1,17 @@
+{
+ "publicKey": "lkobeceJ2wRvPA2vtKIQRKR9HJq9jMeM3qtiSLKSu+A=",
+ "modules": [
+  {
+   "slug": "github",
+   "version": 1,
+   "payload": "{\"slug\":\"github\",\"version\":1,\"recipe\":{\"name\":\"GitHub\",\"description\":\"Followers, repositories and join date from a public profile.\",\"domain\":\"github.com\",\"modes\":[\"manual\",\"auto\",\"scheduled\"],\"source\":{\"type\":\"api\",\"url\":\"https://api.github.com/users/{username}\"},\"fields\":[{\"key\":\"followers\",\"label\":\"Followers\",\"path\":\"followers\",\"transform\":\"number\"},{\"key\":\"repos\",\"label\":\"Repositories\",\"path\":\"public_repos\",\"transform\":\"number\"},{\"key\":\"joined\",\"label\":\"Join date\",\"path\":\"created_at\",\"regex\":\"^(\\\\d{4}-\\\\d{2}-\\\\d{2})\"},{\"key\":\"profile\",\"label\":\"Profile link\",\"path\":\"html_url\"}]}}",
+   "signature": "vLi6rUVXrEvzN1yp/Wf0abAj8OBuCC+pC169spIzWKsYE7P3E7ycBd2BjSKfCI7DxYLID2GYjUSrNREvtTQwDg=="
+  },
+  {
+   "slug": "reddit",
+   "version": 2,
+   "payload": "{\"slug\":\"reddit\",\"version\":2,\"recipe\":{\"name\":\"Reddit\",\"description\":\"Karma, contributions and cake day from your open profile page.\",\"domain\":\"reddit.com\",\"pages\":[\"^/user/\"],\"modes\":[\"manual\",\"auto\"],\"source\":{\"type\":\"page\",\"namedInAddress\":true},\"fields\":[{\"key\":\"karma\",\"label\":\"Karma\",\"selector\":\"[data-testid=karma-number]\",\"transform\":\"number\"},{\"key\":\"link_karma\",\"label\":\"Post karma\",\"selector\":\"faceplate-tooltip:has([data-testid=karma-number])\",\"regex\":\"([\\\\d,]+) post karma\",\"transform\":\"number\"},{\"key\":\"comment_karma\",\"label\":\"Comment karma\",\"selector\":\"faceplate-tooltip:has([data-testid=karma-number])\",\"regex\":\"([\\\\d,]+) comment karma\",\"transform\":\"number\"},{\"key\":\"contributions\",\"label\":\"Contributions\",\"selector\":\"[data-testid=contribution-count]\",\"transform\":\"number\"},{\"key\":\"cake_day\",\"label\":\"Cake day\",\"selector\":\"time[data-testid=cake-day]\",\"attr\":\"datetime\",\"regex\":\"^(\\\\d{4}-\\\\d{2}-\\\\d{2})\"},{\"key\":\"profile\",\"label\":\"Profile link\",\"template\":\"https://www.reddit.com/user/{username}\"}]}}",
+   "signature": "LPkvU8X1TTwLmY3FmDhoPZhk6juLMsutBTC/1jneMEu4uvvOiJi0fqCbTKgHVWRVVlddkkCu/iCZrR+4Prr2Ag=="
+  }
+ ]
+}
